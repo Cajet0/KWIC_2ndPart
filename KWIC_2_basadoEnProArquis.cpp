@@ -31,14 +31,7 @@ white clouds are
 */
 
 class KWIC {
-
-    vector<string> glbVecSInputStrings;
-    vector<string> glbVecSCircularIt;
-    vector<string> glbVecSStopWords;
-
-    public:
-
-    string transLowerC(string sLine) {
+    static string transLowerC(string sLine) {
         for (int iI = 0; iI < sLine.size(); iI++) {
             sLine[iI] = tolower(sLine[iI]);
         }
@@ -46,7 +39,7 @@ class KWIC {
     }
 
     // Compara cadena recibida con la lista de palabras STOP para tomarla en cuenta o no
-    bool removeWord(string sWord) {
+    static bool removeWord(string sWord, vector<string> glbVecSStopWords) {
         for (int iIt = 0; iIt < glbVecSStopWords.size(); iIt++) {
             if (strcmp(sWord.c_str(), glbVecSStopWords[iIt].c_str()) == 0) {
                 return true;
@@ -57,13 +50,13 @@ class KWIC {
     }
 
     // Recibe un vector para imprimir su contenido de manera enumerada
-    void printWithID(vector<string> listaTexto) {
+    static void printWithID(vector<string> listaTexto) {
         for (int iIte = 0; iIte < listaTexto.size(); iIte++) {
             cout << iIte << " - " << listaTexto[iIte] << endl;
         }
     }
 
-    string cricularShift(string sLine) {
+    static string cricularShift(string sLine) {
         int iFindSpace = sLine.find(' ');
         if(iFindSpace != -1){
             sLine = sLine.substr(iFindSpace + 1) + " " + sLine.substr(0, iFindSpace);
@@ -72,12 +65,12 @@ class KWIC {
     }
 
     // Funcion que elimina espacios en blanco innecesarios que separe a las palabras
-    string removeExtraSpaces(string sLine, bool prueba = false) {
+    static string removeExtraSpaces(string sLine, vector<string> glbVecSStopWords, bool prueba = false) {
         string sFormatLine = "";
         while (sLine != "") {
             if (sLine.find(" ") == -1) {
                 //Ya no se encontraro espacios en blanco
-                if (!removeWord(sLine)) {
+                if (!removeWord(sLine, glbVecSStopWords)) {
                     sFormatLine.append(sLine);
                 } else if (sFormatLine.size() > 0) {
                     sFormatLine = sFormatLine.substr(0, sFormatLine.length() - 1);
@@ -89,8 +82,8 @@ class KWIC {
                 string sWord = sLine.substr(0, sLine.find(" ") + 1);
 
                 // Con esto se eliminan espacios en blanco que sobraran entre la separacion de palabras y se descartan palabras STOP
-                if (sWord != " " && !removeWord(sWord.substr(0, sWord.length() - 1))) {
-                        sFormatLine.append(sWord);
+                if (sWord != " " && !removeWord(sWord.substr(0, sWord.length() - 1), glbVecSStopWords)) {
+                    sFormatLine.append(sWord);
                 }
                 sLine.erase(0, sLine.find(" ") + 1);
             }
@@ -98,7 +91,11 @@ class KWIC {
         return sFormatLine;
     }
 
-    void getInput() {
+    public:
+
+    static vector<string> getInput() {
+        vector<string> glbVecSInputStrings;
+        vector<string> glbVecSStopWords;
         cout << "Ingresa cada una de las palabras STOP (Una palabra por renglon)" << endl;
         cout << "Finaliza la accion ingresando una cadena vacia" << endl;
         string sLine;
@@ -107,7 +104,7 @@ class KWIC {
 
         // el input termina cuando escriba ya no ingrese texto
         while(sLine!="") {
-            sLine = removeExtraSpaces(sLine);
+            sLine = removeExtraSpaces(sLine, glbVecSStopWords);
             glbVecSStopWords.push_back(sLine);
 
             getline(cin, sLine);
@@ -120,16 +117,17 @@ class KWIC {
         // el input termina cuando escriba "end"
         while(sLine!="end") {
             if (sLine != "") {
-                sLine = removeExtraSpaces(sLine, true);
+                sLine = removeExtraSpaces(sLine, glbVecSStopWords, true);
                 glbVecSInputStrings.push_back(sLine);
             }
 
             getline(cin, sLine);
             sLine = transLowerC(sLine);
         }
+        return glbVecSInputStrings;
     }
 
-    void deleteInputLines() {
+    static vector<string> deleteInputLines(vector<string> glbVecSInputStrings) {
         int iPosRenglon = -10;
 
         while (iPosRenglon != -1) {
@@ -144,9 +142,13 @@ class KWIC {
                 glbVecSInputStrings.erase(glbVecSInputStrings.begin() + iPosRenglon);
             }
         }
+
+        return glbVecSInputStrings;
     }
 
-    void getShifts() {
+    static vector<string> getShifts(vector<string> glbVecSInputStrings) {
+        vector<string> glbVecSCircularIt;
+
         for (int iItVect = 0; iItVect < glbVecSInputStrings.size(); iItVect++) {
             int iContWords = 0;
             string sLine = glbVecSInputStrings[iItVect];
@@ -161,9 +163,11 @@ class KWIC {
                 sLine = cricularShift(sLine);
             }
         }
+
+        return glbVecSCircularIt;
     }
 
-    void sortData() {
+    static vector<string> sortData(vector<string> glbVecSCircularIt) {
         int iRespuesta;
         cout << "Ingrese numero de tipo de orden deseado: " << endl;
         cout << "1) Ascendente  -  2) Descendente" << endl;
@@ -173,9 +177,11 @@ class KWIC {
 
         if (iRespuesta == 2)
             reverse(glbVecSCircularIt.begin(), glbVecSCircularIt.end());
+
+        return glbVecSCircularIt;
     }
 
-    void deleteOutputLines() {
+    static vector<string> deleteOutputLines(vector<string> glbVecSCircularIt) {
         int iPosRenglon = -10;
 
         while (iPosRenglon != -1) {
@@ -190,9 +196,11 @@ class KWIC {
                 glbVecSCircularIt.erase(glbVecSCircularIt.begin() + iPosRenglon);
             }
         }
+
+        return glbVecSCircularIt;
     }
 
-    void printOutput() {
+    static void printOutput(vector<string> glbVecSCircularIt) {
         cout << endl << "Ordenamientos resultantes: " << endl;
         for (int iI = 0; iI < glbVecSCircularIt.size(); iI++){
             cout<<glbVecSCircularIt[iI]<<endl;
@@ -201,14 +209,15 @@ class KWIC {
 };
 
 int main() {
-    KWIC kwic;
+    vector<string> glbVecSInputStrings;
+    vector<string> glbVecSCircularIt;
 
-    kwic.getInput();
-    kwic.deleteInputLines();
-    kwic.getShifts();
-    kwic.sortData();
-    kwic.deleteOutputLines();
-    kwic.printOutput();
+    glbVecSInputStrings = KWIC::getInput();
+    glbVecSInputStrings = KWIC::deleteInputLines(glbVecSInputStrings);
+    glbVecSCircularIt   = KWIC::getShifts(glbVecSInputStrings);
+    glbVecSCircularIt   = KWIC::sortData(glbVecSCircularIt);
+    glbVecSCircularIt   = KWIC::deleteOutputLines(glbVecSCircularIt);
+    KWIC::printOutput(glbVecSCircularIt);
 
     return 0;
 }
