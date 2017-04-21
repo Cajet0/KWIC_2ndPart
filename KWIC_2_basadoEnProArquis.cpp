@@ -94,7 +94,7 @@ class KWIC {
     public:
 
     static vector<string> getInput() {
-        vector<string> glbVecSInputStrings;
+        vector<string> vecSInputStrings;
         vector<string> glbVecSStopWords;
         cout << "Ingresa cada una de las palabras STOP (Una palabra por renglon)" << endl;
         cout << "Finaliza la accion ingresando una cadena vacia" << endl;
@@ -118,40 +118,40 @@ class KWIC {
         while(sLine!="end") {
             if (sLine != "") {
                 sLine = removeExtraSpaces(sLine, glbVecSStopWords, true);
-                glbVecSInputStrings.push_back(sLine);
+                vecSInputStrings.push_back(sLine);
             }
 
             getline(cin, sLine);
             sLine = transLowerC(sLine);
         }
-        return glbVecSInputStrings;
+        return vecSInputStrings;
     }
 
-    static vector<string> deleteInputLines(vector<string> glbVecSInputStrings) {
+    static vector<string> deleteInputLines(vector<string> vecSInputStrings) {
         int iPosRenglon = -10;
 
         while (iPosRenglon != -1) {
             cout << endl << "Lineas de entrada ingresada por usuario: " << endl;
-            printWithID(glbVecSInputStrings);
+            printWithID(vecSInputStrings);
 
             cout << "Ingrese numero de renglon si desea eliminarlo como entrada" << endl;
             cout << "Ingrese -1 para proseguir" << endl;
             cin >> iPosRenglon;
 
-            if (iPosRenglon > -1 && iPosRenglon < glbVecSInputStrings.size()) {
-                glbVecSInputStrings.erase(glbVecSInputStrings.begin() + iPosRenglon);
+            if (iPosRenglon > -1 && iPosRenglon < vecSInputStrings.size()) {
+                vecSInputStrings.erase(vecSInputStrings.begin() + iPosRenglon);
             }
         }
 
-        return glbVecSInputStrings;
+        return vecSInputStrings;
     }
 
-    static vector<string> getShifts(vector<string> glbVecSInputStrings) {
-        vector<string> glbVecSCircularIt;
+    static vector<string> getShifts(vector<string> vecSInputStrings) {
+        vector<string> vecSCircularlt;
 
-        for (int iItVect = 0; iItVect < glbVecSInputStrings.size(); iItVect++) {
+        for (int iItVect = 0; iItVect < vecSInputStrings.size(); iItVect++) {
             int iContWords = 0;
-            string sLine = glbVecSInputStrings[iItVect];
+            string sLine = vecSInputStrings[iItVect];
             for (int iI = 0; iI < sLine.size(); iI++) {
                 if (sLine[iI] == ' ')
                     iContWords++;
@@ -159,65 +159,65 @@ class KWIC {
             iContWords++;
 
             for (int iI = 0; iI < iContWords; iI ++) {
-                glbVecSCircularIt.push_back(sLine);
+                vecSCircularlt.push_back(sLine);
                 sLine = cricularShift(sLine);
             }
         }
 
-        return glbVecSCircularIt;
+        return vecSCircularlt;
     }
 
-    static vector<string> sortData(vector<string> glbVecSCircularIt) {
+    static vector<string> sortData(vector<string> vecSCircularlt) {
         int iRespuesta;
         cout << "Ingrese numero de tipo de orden deseado: " << endl;
         cout << "1) Ascendente  -  2) Descendente" << endl;
         cin >> iRespuesta;
 
-        sort(glbVecSCircularIt.begin(), glbVecSCircularIt.end());
+        sort(vecSCircularlt.begin(), vecSCircularlt.end());
 
         if (iRespuesta == 2)
-            reverse(glbVecSCircularIt.begin(), glbVecSCircularIt.end());
+            reverse(vecSCircularlt.begin(), vecSCircularlt.end());
 
-        return glbVecSCircularIt;
+        return vecSCircularlt;
     }
 
-    static vector<string> deleteOutputLines(vector<string> glbVecSCircularIt) {
+    static vector<string> deleteOutputLines(vector<string> vecSCircularlt) {
         int iPosRenglon = -10;
 
         while (iPosRenglon != -1) {
             cout << endl << "Lineas de salida generadas: " << endl;
-            printWithID(glbVecSCircularIt);
+            printWithID(vecSCircularlt);
 
             cout << "Ingrese numero de renglon si desea eliminar alguna salida" << endl;
             cout << "Ingrese -1 para proseguir" << endl;
             cin >> iPosRenglon;
 
-            if (iPosRenglon > -1 && iPosRenglon < glbVecSCircularIt.size()) {
-                glbVecSCircularIt.erase(glbVecSCircularIt.begin() + iPosRenglon);
+            if (iPosRenglon > -1 && iPosRenglon < vecSCircularlt.size()) {
+                vecSCircularlt.erase(vecSCircularlt.begin() + iPosRenglon);
             }
         }
 
-        return glbVecSCircularIt;
+        return vecSCircularlt;
     }
 
-    static void printOutput(vector<string> glbVecSCircularIt) {
+    static void printOutput(vector<string> vecSCircularlt) {
         cout << endl << "Ordenamientos resultantes: " << endl;
-        for (int iI = 0; iI < glbVecSCircularIt.size(); iI++){
-            cout<<glbVecSCircularIt[iI]<<endl;
+        for (int iI = 0; iI < vecSCircularlt.size(); iI++){
+            cout << vecSCircularlt[iI] << endl;
         }
     }
 };
 
 int main() {
-    vector<string> glbVecSInputStrings;
-    vector<string> glbVecSCircularIt;
+    vector<string> vecSInputStrings;
+    vector<string> vecSCircularlt;
 
-    glbVecSInputStrings = KWIC::getInput();
-    glbVecSInputStrings = KWIC::deleteInputLines(glbVecSInputStrings);
-    glbVecSCircularIt   = KWIC::getShifts(glbVecSInputStrings);
-    glbVecSCircularIt   = KWIC::sortData(glbVecSCircularIt);
-    glbVecSCircularIt   = KWIC::deleteOutputLines(glbVecSCircularIt);
-    KWIC::printOutput(glbVecSCircularIt);
+    vecSInputStrings = KWIC::getInput();
+    vecSInputStrings = KWIC::deleteInputLines(vecSInputStrings);
+    vecSCircularlt   = KWIC::getShifts(vecSInputStrings);
+    vecSCircularlt   = KWIC::sortData(vecSCircularlt);
+    vecSCircularlt   = KWIC::deleteOutputLines(vecSCircularlt);
+    KWIC::printOutput(vecSCircularlt);
 
     return 0;
 }
