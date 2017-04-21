@@ -39,9 +39,9 @@ class KWIC {
     }
 
     // Compara cadena recibida con la lista de palabras STOP para tomarla en cuenta o no
-    static bool removeWord(string sWord, vector<string> glbVecSStopWords) {
-        for (int iIt = 0; iIt < glbVecSStopWords.size(); iIt++) {
-            if (strcmp(sWord.c_str(), glbVecSStopWords[iIt].c_str()) == 0) {
+    static bool removeWord(string sWord, vector<string> vecSStopWords) {
+        for (int iIt = 0; iIt < vecSStopWords.size(); iIt++) {
+            if (strcmp(sWord.c_str(), vecSStopWords[iIt].c_str()) == 0) {
                 return true;
             }
         }
@@ -50,9 +50,9 @@ class KWIC {
     }
 
     // Recibe un vector para imprimir su contenido de manera enumerada
-    static void printWithID(vector<string> listaTexto) {
-        for (int iIte = 0; iIte < listaTexto.size(); iIte++) {
-            cout << iIte << " - " << listaTexto[iIte] << endl;
+    static void printWithID(vector<string> vecSListaTexto) {
+        for (int iIte = 0; iIte < vecSListaTexto.size(); iIte++) {
+            cout << iIte << " - " << vecSListaTexto[iIte] << endl;
         }
     }
 
@@ -65,12 +65,12 @@ class KWIC {
     }
 
     // Funcion que elimina espacios en blanco innecesarios que separe a las palabras
-    static string removeExtraSpaces(string sLine, vector<string> glbVecSStopWords, bool prueba = false) {
+    static string removeExtraSpaces(string sLine, vector<string> vecSStopWords) {
         string sFormatLine = "";
         while (sLine != "") {
             if (sLine.find(" ") == -1) {
                 //Ya no se encontraro espacios en blanco
-                if (!removeWord(sLine, glbVecSStopWords)) {
+                if (!removeWord(sLine, vecSStopWords)) {
                     sFormatLine.append(sLine);
                 } else if (sFormatLine.size() > 0) {
                     sFormatLine = sFormatLine.substr(0, sFormatLine.length() - 1);
@@ -82,7 +82,7 @@ class KWIC {
                 string sWord = sLine.substr(0, sLine.find(" ") + 1);
 
                 // Con esto se eliminan espacios en blanco que sobraran entre la separacion de palabras y se descartan palabras STOP
-                if (sWord != " " && !removeWord(sWord.substr(0, sWord.length() - 1), glbVecSStopWords)) {
+                if (sWord != " " && !removeWord(sWord.substr(0, sWord.length() - 1), vecSStopWords)) {
                     sFormatLine.append(sWord);
                 }
                 sLine.erase(0, sLine.find(" ") + 1);
@@ -95,7 +95,7 @@ class KWIC {
 
     static vector<string> getInput() {
         vector<string> vecSInputStrings;
-        vector<string> glbVecSStopWords;
+        vector<string> vecSStopWords;
         cout << "Ingresa cada una de las palabras STOP (Una palabra por renglon)" << endl;
         cout << "Finaliza la accion ingresando una cadena vacia" << endl;
         string sLine;
@@ -104,8 +104,8 @@ class KWIC {
 
         // el input termina cuando escriba ya no ingrese texto
         while(sLine!="") {
-            sLine = removeExtraSpaces(sLine, glbVecSStopWords);
-            glbVecSStopWords.push_back(sLine);
+            sLine = removeExtraSpaces(sLine, vecSStopWords);
+            vecSStopWords.push_back(sLine);
 
             getline(cin, sLine);
             sLine = transLowerC(sLine);
@@ -117,7 +117,7 @@ class KWIC {
         // el input termina cuando escriba "end"
         while(sLine!="end") {
             if (sLine != "") {
-                sLine = removeExtraSpaces(sLine, glbVecSStopWords, true);
+                sLine = removeExtraSpaces(sLine, vecSStopWords);
                 vecSInputStrings.push_back(sLine);
             }
 
